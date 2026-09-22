@@ -1,0 +1,47 @@
+.footer {
+  border-top: 1px solid var(--border);
+  margin-top: var(--s9);
+  padding: var(--s6) 0 var(--s7);
+}
+
+.inner {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s5);
+  flex-wrap: wrap;
+}
+
+.brand {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.24em;
+  font-weight: 600;
+}
+
+.note {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  max-width: 44ch;
+  margin-top: var(--s2);
+}
+
+.legal {
+  font-size: 0.75rem;
+  color: var(--text-faint);
+  max-width: 44ch;
+  margin-top: var(--s3);
+  line-height: 1.55;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+
+.link {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  transition: color var(--dur-fast) var(--ease);
+}
+.link:hover { color: var(--text); }

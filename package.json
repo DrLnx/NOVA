@@ -1,0 +1,32 @@
+{
+  "name": "scope",
+  "version": "0.1.0",
+  "private": true,
+  "description": "SCOPE — personal news intelligence. German and global current events, grouped into stories so you can see how different outlets frame the same event.",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "check:feeds": "tsx scripts/check-feeds.ts",
+    "inspect:clusters": "tsx scripts/inspect-clusters.ts",
+    "inspect:weights": "tsx scripts/inspect-weights.ts"
+  },
+  "dependencies": {
+    "fast-xml-parser": "^5.11.1",
+    "geist": "^1.7.2",
+    "next": "^16.3.6",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.0"
+  }
+}

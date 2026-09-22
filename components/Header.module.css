@@ -1,0 +1,195 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: saturate(180%) blur(14px);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: var(--s5);
+  height: var(--header-h);
+}
+
+.brand {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  flex: none;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+.brand:hover { opacity: 0.6; }
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--s4);
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav::-webkit-scrollbar { display: none; }
+
+.link {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  padding: var(--s1) 0;
+  border-bottom: 1px solid transparent;
+  transition: color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+.link:hover { color: var(--text); }
+.linkActive {
+  color: var(--text);
+  border-bottom-color: var(--text);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  flex: none;
+}
+
+.iconButton {
+  display: grid;
+  place-items: center;
+  width: 30px; height: 30px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.iconButton:hover {
+  color: var(--text);
+  background: var(--bg-inset);
+}
+
+.searchButton {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  height: 30px;
+  padding: 0 var(--s2) 0 var(--s3);
+  border: 1px solid var(--border);
+  background: var(--bg-subtle);
+  border-radius: var(--radius);
+  color: var(--text-faint);
+  font-size: 0.8125rem;
+  cursor: pointer;
+  min-width: 190px;
+  transition: border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.searchButton:hover {
+  border-color: var(--border-strong);
+  color: var(--text-muted);
+}
+.searchLabel { flex: 1; text-align: left; }
+
+.kbd {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  padding: 1px 5px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text-faint);
+  background: var(--bg);
+}
+
+.langToggle {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  height: 30px;
+}
+
+.langOption {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  padding: 0 var(--s2);
+  height: 100%;
+  border: none;
+  background: transparent;
+  color: var(--text-faint);
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.langOption:hover { color: var(--text); }
+/* Must also win on :hover — the pointer sits on the button right after a
+   click, and `.langOption:hover` is the more specific selector, which turned
+   the active label black-on-black. */
+.langActive,
+.langActive:hover {
+  background: var(--text);
+  color: var(--bg);
+}
+
+@media (max-width: 860px) {
+  .searchButton { min-width: 0; width: 30px; padding: 0; justify-content: center; }
+  .searchLabel, .kbd { display: none; }
+}
+
+/* Below this width the section links cannot fit beside the controls without
+   clipping mid-word, so they move down into the scrolling strip instead. */
+@media (max-width: 720px) {
+  .nav { display: none; }
+  .bar { gap: var(--s3); justify-content: space-between; }
+}
+
+/* Category strip below the main bar. */
+.strip {
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.stripInner {
+  display: flex;
+  align-items: center;
+  gap: var(--s5);
+  height: 40px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.stripInner::-webkit-scrollbar { display: none; }
+
+.stripLink {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  white-space: nowrap;
+  transition: color var(--dur-fast) var(--ease);
+}
+.stripLink:hover { color: var(--text); }
+.stripActive { color: var(--text); }
+
+/* The section links, shown in the strip only where the top bar cannot hold them. */
+.stripSections { display: none; }
+
+@media (max-width: 720px) {
+  .stripSections {
+    display: contents;
+  }
+  .stripDivider {
+    display: block;
+    width: 1px;
+    height: 12px;
+    background: var(--border);
+    flex: none;
+  }
+}
+
+.stripDivider { display: none; }

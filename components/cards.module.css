@@ -1,0 +1,158 @@
+/* ─── Lead story ────────────────────────────────────────────────────────── */
+.lead {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: var(--s7);
+  align-items: start;
+  padding-bottom: var(--s7);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--s6);
+}
+
+.leadBody { display: flex; flex-direction: column; gap: var(--s4); }
+
+.leadTitle {
+  font-family: var(--font-serif);
+  font-size: clamp(1.9rem, 4.2vw, 2.9rem);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.028em;
+}
+
+.leadSummary {
+  font-size: 1.0625rem;
+  line-height: 1.62;
+  color: var(--text-secondary);
+  max-width: 54ch;
+}
+
+.leadImage { width: 100%; }
+
+@media (max-width: 900px) {
+  .lead {
+    grid-template-columns: 1fr;
+    gap: var(--s5);
+    padding-bottom: var(--s6);
+  }
+  .leadImage { order: -1; }
+}
+
+/* ─── Story row ─────────────────────────────────────────────────────────── */
+.row {
+  display: grid;
+  grid-template-columns: 1fr 132px;
+  gap: var(--s5);
+  align-items: start;
+  padding: var(--s5) 0;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+
+.row:last-child { border-bottom: none; }
+
+.rowBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  min-width: 0;
+}
+
+.rowTitle {
+  font-family: var(--font-serif);
+  font-size: 1.3125rem;
+  font-weight: 500;
+  line-height: 1.24;
+  letter-spacing: -0.016em;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+
+.rowSummary {
+  font-size: 0.9375rem;
+  line-height: 1.58;
+  color: var(--text-muted);
+  max-width: 62ch;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.rowImage { width: 132px; }
+
+/* The whole row is the target; the link fills it without nesting interactive
+   elements, so the bookmark button stays independently clickable. */
+.stretch::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.row:hover .rowTitle { opacity: 0.62; }
+.row:hover .rowImage img { transform: scale(1.03); }
+
+.rowMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+.rowFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s4);
+}
+
+@media (max-width: 640px) {
+  .row {
+    grid-template-columns: 1fr 88px;
+    gap: var(--s4);
+    padding: var(--s4) 0;
+  }
+  .rowImage { width: 88px; }
+  .rowTitle { font-size: 1.125rem; }
+  .rowSummary { -webkit-line-clamp: 3; line-clamp: 3; }
+}
+
+/* ─── Compact row: sidebars, related lists ──────────────────────────────── */
+.compact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  padding: var(--s4) 0;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.compact:last-child { border-bottom: none; }
+
+.compactTitle {
+  font-size: 0.9375rem;
+  font-weight: 450;
+  line-height: 1.4;
+  letter-spacing: -0.008em;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+.compact:hover .compactTitle { opacity: 0.62; }
+
+/* ─── Feed list ─────────────────────────────────────────────────────────── */
+.list {
+  list-style: none;
+  border-top: 1px solid var(--border);
+}
+
+.listBare { list-style: none; }
+
+/* Staggered entrance, capped so a long feed does not crawl in. */
+.list > li { animation: rise var(--dur) var(--ease) both; }
+.list > li:nth-child(1)  { animation-delay: 0ms; }
+.list > li:nth-child(2)  { animation-delay: 30ms; }
+.list > li:nth-child(3)  { animation-delay: 60ms; }
+.list > li:nth-child(4)  { animation-delay: 90ms; }
+.list > li:nth-child(5)  { animation-delay: 120ms; }
+.list > li:nth-child(6)  { animation-delay: 150ms; }
+.list > li:nth-child(7)  { animation-delay: 180ms; }
+.list > li:nth-child(n+8) { animation-delay: 200ms; }
