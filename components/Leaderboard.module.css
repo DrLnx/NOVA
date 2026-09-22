@@ -1,0 +1,61 @@
+.list { list-style: none; }
+
+.item {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) 26px;
+  grid-template-rows: auto auto;
+  column-gap: var(--s3);
+  row-gap: var(--s2);
+  align-items: baseline;
+  padding: var(--s3) 0;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.item:last-child { border-bottom: none; }
+
+.rank {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.04em;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.title {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  letter-spacing: -0.008em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+.item:hover .title { opacity: 0.6; }
+
+.value {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+/* A hairline bar rather than a filled chart: it reads as a measurement, not
+   as decoration, which is the point of showing the number at all. */
+.track {
+  grid-column: 2 / -1;
+  height: 2px;
+  background: var(--bg-inset);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.fill {
+  display: block;
+  height: 100%;
+  background: var(--text);
+  transition: width var(--dur) var(--ease);
+}

@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import type { Article, Category, Story } from '@/lib/types';
+import type { Article, Category, LocalizedText, Story } from '@/lib/types';
 import { getSource } from '@/lib/sources';
 import { isRenderableImage } from '@/lib/images';
 import { absoluteTime, relativeTime } from '@/lib/i18n';
@@ -167,32 +167,62 @@ export function SectionHead({ title, count }: { title: string; count?: string })
 }
 
 /**
- * The importance indicator. Deliberately shows the number as well as the bars:
- * a badge alone asks to be trusted, a number can be checked against the
- * breakdown on the story page.
+ * The importance indicator.
+ *
+ * Shows the number as well as the bars: a badge alone asks to be trusted, a
+ * number can be checked against the breakdown on the story page. The word
+ * label is reserved for lead stories, so scanning a column of cards is not
+ * competing with a repeated "NOTABLE" on every row.
  */
-export function WeightBadge({ story, showValue = true }: { story: Story; showValue?: boolean }) {
+export function WeightBadge({ story, showLabel }: { story: Story; showLabel?: boolean }) {
   const dict = useDict();
   const weight = weighStory(story);
   const bars = LEVEL_BARS[weight.level];
+  const withLabel = showLabel ?? weight.level === 'lead';
 
   return (
     <span
       className={`${s.weight} ${weight.level === 'lead' ? s.weightLead : ''}`}
-      title={`${dict.weight}: ${weight.value}/100`}
+      title={`${dict.weight}: ${weight.value}/100 · ${dict.importance[weight.level]}`}
     >
       <span className={s.bars} aria-hidden>
         {[0, 1, 2, 3].map((i) => (
           <span key={i} className={`${s.bar} ${i < bars ? s.barOn : ''}`} />
         ))}
       </span>
-      <span className={s.weightLabel}>{dict.importance[weight.level]}</span>
-      {showValue ? <span className={s.weightValue}>{weight.value}</span> : null}
+      {withLabel ? <span className={s.weightLabel}>{dict.importance[weight.level]}</span> : null}
+      <span className={s.weightValue}>{weight.value}</span>
       <span className="visually-hidden">
-        {dict.weight} {weight.value} / 100
+        {dict.weight} {weight.value} / 100, {dict.importance[weight.level]}
       </span>
     </span>
   );
+}
+
+/**
+ * Marks text that is not the newsroom's own wording. Machine translation gets
+ * things wrong, so a reader is always told when they are looking at it rather
+ * than at what the outlet actually wrote.
+ */
+export function TranslationMark({ text }: { text: LocalizedText }) {
+  const { lang } = useApp();
+  const dict = useDict();
+
+  if (text.translated) {
+    return (
+      <span className={s.mark} title={dict.translatedNote}>
+        {dict.translated}
+      </span>
+    );
+  }
+  if (text.lang !== lang) {
+    return (
+      <span className={s.mark} title={dict.originalLanguage}>
+        {text.lang === 'de' ? dict.inGerman : dict.inEnglish}
+      </span>
+    );
+  }
+  return null;
 }
 
 /** The arithmetic behind a story's weight, shown on its own page. */

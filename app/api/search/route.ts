@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getCorpus } from '@/lib/corpus';
 import { searchArticles, type SearchFilters } from '@/lib/search';
+import { attachArticleL10n } from '@/lib/localize';
 import { CATEGORIES, type Category, type Region } from '@/lib/types';
 import { SOURCE_BY_ID } from '@/lib/sources';
 
@@ -30,9 +31,10 @@ export async function GET(request: Request) {
 
   const { articles } = await getCorpus();
   const hits = searchArticles(articles, query, filters, limit);
+  const results = await attachArticleL10n(hits.map((h) => h.article));
 
   return NextResponse.json(
-    { query, count: hits.length, results: hits.map((h) => h.article) },
+    { query, count: results.length, results },
     { headers: { 'cache-control': 'no-store' } },
   );
 }

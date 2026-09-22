@@ -1,14 +1,12 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getCorpus, getStories } from '@/lib/corpus';
-import { levelFor } from '@/lib/rank';
+import { attachArticleL10n, attachStoryL10n } from '@/lib/localize';
 import { CATEGORIES, type Category, type Region } from '@/lib/types';
-import { LeadStory } from '@/components/StoryCard';
-import { RegionFilter } from '@/components/RegionFilter';
-import { EmptyState } from '@/components/Masthead';
-import { CategoryMasthead } from '@/components/CategoryMasthead';
-import { WeightedSections } from '@/components/WeightedSections';
-import { LatestRail } from '@/components/LatestRail';
+import { Hero } from '@/components/StoryCard';
+import { DateBar, EmptyState } from '@/components/DateBar';
+import { FeedSections } from '@/components/FeedSections';
+import { CategoryHeading } from '@/components/CategoryMasthead';
 import s from '@/app/page.module.css';
 
 export const revalidate = 300;
@@ -41,36 +39,40 @@ export default async function CategoryPage({
   const region: Region | undefined = raw === 'de' || raw === 'global' ? raw : undefined;
 
   const corpus = await getCorpus();
-  const stories = await getStories({ category, ...(region ? { region } : {}) });
-  const [lead, ...rest] = stories;
+  const stories = await attachStoryL10n(
+    await getStories({ category, ...(region ? { region } : {}) }, 45),
+  );
 
-  const firstRoutine = rest.findIndex((story) => levelFor(story.score) === 'routine');
-  const major = firstRoutine === -1 ? rest : rest.slice(0, firstRoutine);
-  const minor = firstRoutine === -1 ? [] : rest.slice(firstRoutine);
+  const lead = stories[0];
+  const side = stories.slice(1, 4);
+  const grid = stories.slice(4, 12);
+  const rest = stories.slice(12, 45);
+  const leaderboard = stories.slice(0, 8);
 
-  const latest = corpus.articles
-    .filter((a) => a.category === category && (!region || a.region === region))
-    .slice(0, 10);
+  const latest = await attachArticleL10n(
+    corpus.articles
+      .filter((a) => a.category === category && (!region || a.region === region))
+      .slice(0, 10),
+  );
 
   return (
     <div className={`${s.page} container`}>
-      <CategoryMasthead category={category} count={stories.length} />
+      <CategoryHeading category={category} count={stories.length} />
 
-      <div className={s.controls}>
-        <RegionFilter basePath={`/category/${category}`} active={region ?? 'all'} />
-      </div>
+      <DateBar
+        basePath={`/category/${category}`}
+        region={region ?? 'all'}
+        articles={corpus.articles.filter((a) => a.category === category).length}
+        sources={new Set(corpus.articles.filter((a) => a.category === category).map((a) => a.sourceId)).size}
+        failures={0}
+      />
 
       {!lead ? (
         <EmptyState />
       ) : (
         <>
-          <LeadStory story={lead} />
-          <div className={s.split}>
-            <WeightedSections major={major.slice(0, 24)} minor={minor.slice(0, 20)} />
-            <aside className={s.rail}>
-              <LatestRail articles={latest} />
-            </aside>
-          </div>
+          <Hero lead={lead} side={side} />
+          <FeedSections grid={grid} rest={rest} latest={latest} leaderboard={leaderboard} />
         </>
       )}
     </div>

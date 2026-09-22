@@ -26,6 +26,14 @@ English surface forms (`Selenskyj` ↔ `Zelensky`, `Waffenruhe` ↔ `ceasefire`,
 `Militärjet` ↔ `aircraft`) before vectorising, so a tagesschau piece and a BBC
 piece about the same event land in one story.
 
+**Fully bilingual, headlines included.** Pick German and the whole page is
+German. Because stories are clusters, the first move is not translation: about
+60% of front-page stories already contain a German article, and SCOPE shows that
+newsroom's own headline and summary. Only the remainder is machine-translated,
+cached permanently on disk, and always marked `ÜBERSETZT`. Where a headline has
+been translated, the publisher's original is kept visible underneath on the
+story and article pages — translating it away would destroy the comparison.
+
 **Visible weighting.** Every story carries an importance score out of 100, and
 the story page shows the arithmetic behind it — sources, countries, cross-border
 spread, source tier, recency. The number shown is the same number that orders
@@ -41,6 +49,8 @@ funding, and flags the ones that take an explicit editorial position.
 ```
 lib/
   sources.ts      17 outlets / 32 feeds, every one probed before being added
+  localize.ts     same-language source preference, then translation, then label
+  translate.ts    MyMemory client, permanent disk cache, rolling rate limit
   fetch.ts        8s timeout, Promise.all, never throws
   parse.ts        RSS 2.0 + Atom + RDF in one path
   normalize.ts    images, summaries, dates, junk filtering
@@ -57,6 +67,17 @@ Next.js 16 App Router. Pages are server components; the client bundle carries
 only the theme and language toggles, the ⌘K palette, filters and bookmarks.
 Feeds refresh every 5 minutes.
 
+Both languages are resolved on the server for everything a page will show, so
+switching DE/EN is instant and never waits on a network call.
+
+### Layout
+
+A wide editorial canvas (1480px, fluid gutters). The front page reads top-down:
+a hero with the lead story and three beside it, a four-across grid of lead
+stories separated by column hairlines, then a dense list with a rail carrying
+the weight leaderboard and the newest items. Four columns at ≥1200px, three at
+≥900, two at ≥561, one below.
+
 ### Notes on some decisions
 
 **Clustering threshold is 0.34**, tuned against a live 1,189-article corpus
@@ -72,6 +93,16 @@ four stories all read 100, which told the reader nothing.
 
 **Image URLs are never rewritten.** The Guardian signs its image URLs, so
 "upgrading" the width parameter invalidates the signature and returns 401.
+
+**Translation is a last resort, not the mechanism.** Picking the German article
+out of a cluster costs nothing, never garbles a headline, and is what a German
+reader actually wants. Machine translation only fills the gap, and its output is
+labelled because free MT does get things wrong — it rendered "drops" (as in
+*released*) literally in one book headline during testing.
+
+**The translation limiter is time-based.** A per-build counter starved every
+later request: the corpus build spent the whole allowance and story pages opened
+minutes afterwards silently fell back to English.
 
 **Word lists are written in real German** (`Türkei`, not `tuerkei`) and folded at
 construction, because `fold()` strips umlauts to a bare vowel. Hand-transliterating

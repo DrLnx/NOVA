@@ -12,7 +12,7 @@
 
 .title {
   font-family: var(--font-serif);
-  font-size: clamp(1.75rem, 3.6vw, 2.5rem);
+  font-size: clamp(2rem, 3.4vw, 3rem);
   font-weight: 500;
   letter-spacing: -0.028em;
 }
@@ -26,14 +26,14 @@
 
 .groupLabel {
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.1em;
+  font-size: 0.8125rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--text);
   padding-bottom: var(--s3);
-  border-bottom: 1px solid var(--text);
+  border-bottom: 2px solid var(--text);
   margin-bottom: var(--s2);
-  margin-top: var(--s7);
+  margin-top: var(--s8);
 }
 .groupLabel:first-of-type { margin-top: 0; }
 
@@ -41,8 +41,8 @@
 
 .item {
   display: grid;
-  grid-template-columns: 200px minmax(0, 1fr);
-  gap: var(--s5);
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: var(--s6);
   padding: var(--s5) 0;
   border-bottom: 1px solid var(--border);
 }

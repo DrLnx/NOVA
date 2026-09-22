@@ -3,11 +3,11 @@
 import Link from 'next/link';
 import type { Article, Story } from '@/lib/types';
 import { getSource } from '@/lib/sources';
-import { absoluteTime } from '@/lib/i18n';
+import { absoluteTime, textFor } from '@/lib/i18n';
 import { useApp, useDict } from '@/components/Providers';
 import {
   BookmarkButton, CategoryTag, CoveragePill, ImageTile, SectionHead, Separator,
-  SourceBadge, Timestamp,
+  SourceBadge, Timestamp, TranslationMark,
 } from '@/components/primitives';
 import { ArticleCompact } from '@/components/ArticleCard';
 import s from './article.module.css';
@@ -40,6 +40,8 @@ export function ArticleView({
   const dict = useDict();
   const { lang } = useApp();
   const source = getSource(article.sourceId);
+  const text = textFor(article, lang);
+  const showOriginal = text.title !== article.title;
 
   return (
     <div className={`${s.page} container`}>
@@ -55,9 +57,17 @@ export function ArticleView({
             <Timestamp iso={article.publishedAt} />
             <Separator />
             <CategoryTag category={article.category} />
+            <TranslationMark text={text} />
           </div>
 
-          <h1 className={s.title}>{article.title}</h1>
+          <h1 className={s.title}>{text.title}</h1>
+
+          {showOriginal ? (
+            <p className={s.original}>
+              <span className={s.originalLabel}>{dict.originalHeadline}</span>
+              {article.title}
+            </p>
+          ) : null}
 
           {article.author ? (
             <p className={s.byline}>
@@ -79,7 +89,7 @@ export function ArticleView({
             </div>
           ) : null}
 
-          {article.summary ? <p className={s.summary}>{article.summary}</p> : null}
+          {text.summary ? <p className={s.summary}>{text.summary}</p> : null}
 
           <div className={s.ctaRow}>
             <a className={s.cta} href={article.url} target="_blank" rel="noopener noreferrer">

@@ -4,9 +4,15 @@ import { SOURCES } from './sources';
 import { fetchAll } from './fetch';
 import { clusterArticles, toStories } from './cluster';
 import { rankStories } from './rank';
+import { attachArticleL10n, attachStoryL10n } from './localize';
+import { beginTranslationBudget, flushCache } from './translate';
 
 /** Matches the route segment revalidate time. */
 const TTL_MS = 5 * 60 * 1000;
+
+/** How far down the ranked feed to pre-resolve both languages. */
+const L10N_STORY_DEPTH = 70;
+const L10N_ARTICLE_DEPTH = 40;
 
 interface CacheEntry {
   corpus: Corpus;
@@ -41,6 +47,14 @@ async function build(): Promise<Corpus> {
   articles.sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt));
 
   const stories = rankStories(toStories(clusterArticles(articles)));
+
+  // Resolve both UI languages up front for everything a page is likely to show,
+  // so switching language is instant and no request pays for a network call.
+  // Deeper pages localize on demand; by then the cache almost always has it.
+  beginTranslationBudget();
+  await attachStoryL10n(stories.slice(0, L10N_STORY_DEPTH));
+  await attachArticleL10n(articles.slice(0, L10N_ARTICLE_DEPTH));
+  await flushCache();
 
   const failures = results
     .filter((r) => r.error)

@@ -2,9 +2,8 @@
 
 import type { Article } from '@/lib/types';
 import { ArticleCompact } from './ArticleCard';
-import { SectionHead } from './primitives';
+import { SectionHeading } from './DateBar';
 import { useDict } from './Providers';
-import s from '@/app/page.module.css';
 
 /** A straight reverse-chronological column, as a counterweight to the ranked feed. */
 export function LatestRail({ articles }: { articles: Article[] }) {
@@ -12,7 +11,7 @@ export function LatestRail({ articles }: { articles: Article[] }) {
   if (articles.length === 0) return null;
   return (
     <div>
-      <SectionHead title={dict.latest} />
+      <SectionHeading title={dict.latest} />
       <ul style={{ listStyle: 'none' }}>
         {articles.map((a) => (
           <li key={a.id}>

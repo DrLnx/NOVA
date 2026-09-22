@@ -1,93 +1,173 @@
+'use client';
+
 import Link from 'next/link';
 import type { Story } from '@/lib/types';
+import { textFor } from '@/lib/i18n';
+import { useApp } from './Providers';
 import {
-  BookmarkButton, CategoryTag, CoveragePill, ImageTile, SourceBadge, Separator,
-  Timestamp, WeightBadge,
+  BookmarkButton, CoveragePill, ImageTile, SourceBadge, Separator, Timestamp,
+  TranslationMark, WeightBadge,
 } from './primitives';
 import s from './cards.module.css';
 
 /**
- * A story links to its own page whenever more than one outlet covered it —
- * that page is where the framing comparison lives. A single-source story links
- * straight to the article context page, since there is nothing to compare.
+ * Multi-source stories link to their own page, where the framing comparison
+ * lives. A single-source story goes straight to the article context page —
+ * there is nothing there to compare.
  */
-function storyHref(story: Story): string {
+export function storyHref(story: Story): string {
   return story.sourceIds.length > 1
     ? `/story/${story.id}`
     : `/article/${story.articles[0]?.id ?? ''}`;
 }
 
-export function LeadStory({ story }: { story: Story }) {
+function useStory(story: Story) {
+  const { lang } = useApp();
+  const text = textFor(story, lang);
+  return { text, href: storyHref(story), lang };
+}
+
+export function HeroLead({ story }: { story: Story }) {
+  const { text, href } = useStory(story);
   const lead = story.articles[0];
   if (!lead) return null;
 
   return (
-    <article className={`${s.lead} rise`}>
-      <div className={s.leadBody}>
-        <div className={s.rowMeta}>
-          <WeightBadge story={story} />
-          <Separator />
-          <SourceBadge sourceId={lead.sourceId} />
-          <Separator />
-          <Timestamp iso={story.lastSeen} />
-          <Separator />
-          <CategoryTag category={story.category} />
-        </div>
-
-        <h2 className={s.leadTitle}>
-          <Link href={storyHref(story)}>{story.title}</Link>
-        </h2>
-
-        {story.summary ? <p className={s.leadSummary}>{story.summary}</p> : null}
-
-        <div className={s.rowMeta}>
-          <CoveragePill story={story} />
-          <BookmarkButton article={lead} />
-        </div>
-      </div>
-
-      <Link href={storyHref(story)} className={s.leadImage} tabIndex={-1} aria-hidden>
+    <article className={s.heroLead}>
+      <Link href={href} className={s.heroImage} tabIndex={-1} aria-hidden>
         <ImageTile
           src={story.image}
-          alt={story.imageAlt ?? ''}
-          sourceId={lead.sourceId}
-          width={800}
-          height={500}
-          sizes="(max-width: 900px) 100vw, 520px"
+          alt=""
+          sourceId={text.sourceId || lead.sourceId}
+          width={1120}
+          height={630}
+          sizes="(max-width: 900px) 100vw, 660px"
           priority
         />
       </Link>
+
+      <div className={s.meta}>
+        <WeightBadge story={story} />
+        <Separator />
+        <SourceBadge sourceId={text.sourceId || lead.sourceId} />
+        <Separator />
+        <Timestamp iso={story.lastSeen} />
+        <TranslationMark text={text} />
+      </div>
+
+      <h2 className={s.headline}>
+        <Link href={href} className={s.stretch}>
+          {text.title}
+        </Link>
+      </h2>
+
+      {text.summary ? <p className={s.summary}>{text.summary}</p> : null}
+
+      <div className={s.foot}>
+        <CoveragePill story={story} />
+        <BookmarkButton article={lead} />
+      </div>
+    </article>
+  );
+}
+
+export function HeroSideItem({ story }: { story: Story }) {
+  const { text, href } = useStory(story);
+  const lead = story.articles[0];
+  if (!lead) return null;
+
+  return (
+    <article className={s.heroSideItem}>
+      <div className={s.meta}>
+        <WeightBadge story={story} />
+        <Separator />
+        <Timestamp iso={story.lastSeen} />
+        <TranslationMark text={text} />
+      </div>
+
+      <h3 className={s.headline}>
+        <Link href={href} className={s.stretch}>
+          {text.title}
+        </Link>
+      </h3>
+
+      {text.summary ? <p className={s.summary}>{text.summary}</p> : null}
+
+      <div className={s.foot}>
+        <SourceBadge sourceId={text.sourceId || lead.sourceId} />
+        <CoveragePill story={story} />
+      </div>
+    </article>
+  );
+}
+
+export function StoryGridCard({ story }: { story: Story }) {
+  const { text, href } = useStory(story);
+  const lead = story.articles[0];
+  if (!lead) return null;
+
+  return (
+    <article className={s.gridCard}>
+      <Link href={href} className={s.gridImage} tabIndex={-1} aria-hidden>
+        <ImageTile
+          src={story.image}
+          alt=""
+          sourceId={text.sourceId || lead.sourceId}
+          width={640}
+          height={360}
+          sizes="(max-width: 560px) 100vw, (max-width: 900px) 46vw, 300px"
+        />
+      </Link>
+
+      <div className={s.meta}>
+        <WeightBadge story={story} />
+        <Separator />
+        <Timestamp iso={story.lastSeen} />
+        <TranslationMark text={text} />
+      </div>
+
+      <h3 className={s.headline}>
+        <Link href={href} className={s.stretch}>
+          {text.title}
+        </Link>
+      </h3>
+
+      {text.summary ? <p className={s.summary}>{text.summary}</p> : null}
+
+      <div className={s.foot}>
+        <SourceBadge sourceId={text.sourceId || lead.sourceId} />
+        <CoveragePill story={story} />
+      </div>
     </article>
   );
 }
 
 export function StoryRow({ story }: { story: Story }) {
+  const { text, href } = useStory(story);
   const lead = story.articles[0];
   if (!lead) return null;
-  const href = storyHref(story);
 
   return (
     <article className={s.row}>
       <div className={s.rowBody}>
-        <div className={s.rowMeta}>
+        <div className={s.meta}>
           <WeightBadge story={story} />
           <Separator />
-          <SourceBadge sourceId={lead.sourceId} />
+          <SourceBadge sourceId={text.sourceId || lead.sourceId} />
           <Separator />
           <Timestamp iso={story.lastSeen} />
-          <Separator />
-          <CategoryTag category={story.category} />
+          <TranslationMark text={text} />
         </div>
 
-        <h3 className={s.rowTitle}>
+        <h3 className={s.headline}>
           <Link href={href} className={s.stretch}>
-            {story.title}
+            {text.title}
           </Link>
         </h3>
 
-        {story.summary ? <p className={s.rowSummary}>{story.summary}</p> : null}
+        {text.summary ? <p className={s.summary}>{text.summary}</p> : null}
 
-        <div className={s.rowFoot}>
+        <div className={s.foot}>
           <CoveragePill story={story} />
           <BookmarkButton article={lead} />
         </div>
@@ -97,13 +177,25 @@ export function StoryRow({ story }: { story: Story }) {
         <ImageTile
           src={story.image}
           alt=""
-          sourceId={lead.sourceId}
-          width={264}
-          height={176}
-          sizes="132px"
+          sourceId={text.sourceId || lead.sourceId}
+          width={336}
+          height={224}
+          sizes="168px"
         />
       </div>
     </article>
+  );
+}
+
+export function StoryGrid({ stories }: { stories: Story[] }) {
+  return (
+    <ul className={`${s.grid} ruled`}>
+      {stories.map((story) => (
+        <li key={story.id}>
+          <StoryGridCard story={story} />
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -116,5 +208,19 @@ export function StoryFeed({ stories }: { stories: Story[] }) {
         </li>
       ))}
     </ul>
+  );
+}
+
+/** The hero block: one lead story with two more alongside it. */
+export function Hero({ lead, side }: { lead: Story; side: Story[] }) {
+  return (
+    <section className={s.hero}>
+      <HeroLead story={lead} />
+      <div className={s.heroSide}>
+        {side.map((story) => (
+          <HeroSideItem key={story.id} story={story} />
+        ))}
+      </div>
+    </section>
   );
 }

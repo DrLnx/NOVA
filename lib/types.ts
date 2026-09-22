@@ -48,6 +48,25 @@ export interface Source {
   funding: { de: string; en: string };
 }
 
+/**
+ * A story or article rendered in one UI language. `lang` is the language the
+ * text is actually in, which is not always the language that was asked for —
+ * when nothing in the cluster is written in the reader's language and machine
+ * translation is unavailable, the original is shown and labelled rather than
+ * hidden.
+ */
+export interface LocalizedText {
+  title: string;
+  summary: string;
+  /** The source whose words these are. */
+  sourceId: string;
+  lang: Lang;
+  /** True when machine-translated rather than written by a newsroom. */
+  translated: boolean;
+}
+
+export type Localized = Record<Lang, LocalizedText>;
+
 export interface Article {
   /** Stable hash of the canonical URL. */
   id: string;
@@ -63,6 +82,7 @@ export interface Article {
   image?: string;
   imageAlt?: string;
   author?: string;
+  l10n?: Localized;
 }
 
 export interface Story {
@@ -83,6 +103,7 @@ export interface Story {
   /** True when both German and international outlets are covering it. */
   crossBorder: boolean;
   score: number;
+  l10n?: Localized;
 }
 
 export interface Corpus {

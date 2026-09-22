@@ -2,15 +2,15 @@
 
 .head {
   padding-bottom: var(--s5);
-  border-bottom: 1px solid var(--text);
+  border-bottom: 2px solid var(--text);
   margin-bottom: var(--s5);
 }
 
 .title {
   font-family: var(--font-serif);
-  font-size: clamp(1.75rem, 3.6vw, 2.5rem);
+  font-size: clamp(2rem, 3.4vw, 3rem);
   font-weight: 500;
-  letter-spacing: -0.028em;
+  letter-spacing: -0.03em;
 }
 
 .inputWrap {
@@ -18,6 +18,7 @@
   align-items: center;
   gap: var(--s3);
   margin-top: var(--s4);
+  max-width: 860px;
   padding: 0 var(--s4);
   border: 1px solid var(--border);
   border-radius: var(--radius);

@@ -1,54 +1,174 @@
-/* ─── Lead story ────────────────────────────────────────────────────────── */
-.lead {
-  display: grid;
-  grid-template-columns: 1.15fr 1fr;
-  gap: var(--s7);
-  align-items: start;
-  padding-bottom: var(--s7);
-  border-bottom: 1px solid var(--border);
-  margin-bottom: var(--s6);
+/* ═══ Shared card furniture ════════════════════════════════════════════════ */
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+  min-height: 16px;
 }
 
-.leadBody { display: flex; flex-direction: column; gap: var(--s4); }
-
-.leadTitle {
+.headline {
   font-family: var(--font-serif);
-  font-size: clamp(1.9rem, 4.2vw, 2.9rem);
   font-weight: 500;
-  line-height: 1.08;
-  letter-spacing: -0.028em;
+  letter-spacing: -0.02em;
+  line-height: 1.16;
+  text-wrap: balance;
+  transition: opacity var(--dur-fast) var(--ease);
 }
 
-.leadSummary {
-  font-size: 1.0625rem;
-  line-height: 1.62;
-  color: var(--text-secondary);
-  max-width: 54ch;
+.summary {
+  color: var(--text-muted);
+  line-height: 1.58;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.leadImage { width: 100%; }
+/* The whole card is the hit target; the bookmark keeps its own z-index. */
+.stretch::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  position: relative;
+  z-index: 1;
+}
+
+/* ═══ Hero: lead story plus two beside it ══════════════════════════════════ */
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.72fr) minmax(0, 1fr);
+  gap: var(--s8);
+  padding-bottom: var(--s7);
+  border-bottom: 2px solid var(--text);
+  margin-bottom: var(--s7);
+  position: relative;
+}
+
+/* Hairline between the lead and the stories beside it. */
+.heroSide {
+  border-left: 1px solid var(--border);
+  padding-left: var(--s6);
+}
+
+.heroLead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  position: relative;
+}
+
+.heroImage { width: 100%; }
+
+.heroLead .headline { font-size: clamp(2rem, 3.1vw, 3.5rem); line-height: 1.04; }
+
+.heroLead .summary {
+  font-size: 1.125rem;
+  max-width: 62ch;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+.heroSide {
+  display: flex;
+  flex-direction: column;
+}
+
+
+.heroSideItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  padding: var(--s5) 0;
+  flex: 1;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.heroSideItem:first-child { padding-top: 0; }
+.heroSideItem:last-child { border-bottom: none; }
+
+.heroSideItem .headline { font-size: 1.3125rem; }
+
+.heroSideItem .summary {
+  font-size: 0.875rem;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
 
 @media (max-width: 900px) {
-  .lead {
+  .hero {
     grid-template-columns: 1fr;
     gap: var(--s5);
     padding-bottom: var(--s6);
+    margin-bottom: var(--s6);
   }
-  .leadImage { order: -1; }
+  .heroSide {
+    border-left: none;
+    padding-left: 0;
+    border-top: 1px solid var(--border);
+  }
+  .heroSideItem:first-child { padding-top: var(--s5); }
 }
 
-/* ─── Story row ─────────────────────────────────────────────────────────── */
+/* ═══ Grid: three across ═══════════════════════════════════════════════════ */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s7) var(--s5);
+  list-style: none;
+}
+
+@media (min-width: 1200px) { .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 899.98px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .grid { grid-template-columns: 1fr; gap: var(--s5); } }
+
+.gridCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  position: relative;
+  height: 100%;
+}
+
+.gridImage { width: 100%; margin-bottom: var(--s1); }
+
+.gridCard .headline { font-size: 1.1875rem; }
+
+.gridCard .summary {
+  font-size: 0.875rem;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.gridCard .foot { margin-top: auto; padding-top: var(--s2); }
+
+/* ═══ List: dense rows ═════════════════════════════════════════════════════ */
+
+.list {
+  list-style: none;
+  border-top: 1px solid var(--border);
+}
+
 .row {
   display: grid;
-  grid-template-columns: 1fr 132px;
-  gap: var(--s5);
+  grid-template-columns: minmax(0, 1fr) 208px;
+  gap: var(--s6);
   align-items: start;
   padding: var(--s5) 0;
   border-bottom: 1px solid var(--border);
   position: relative;
 }
-
-.row:last-child { border-bottom: none; }
 
 .rowBody {
   display: flex;
@@ -57,68 +177,39 @@
   min-width: 0;
 }
 
-.rowTitle {
-  font-family: var(--font-serif);
-  font-size: 1.3125rem;
-  font-weight: 500;
-  line-height: 1.24;
-  letter-spacing: -0.016em;
-  transition: opacity var(--dur-fast) var(--ease);
-}
+.row .headline { font-size: 1.375rem; }
 
-.rowSummary {
+.row .summary {
   font-size: 0.9375rem;
-  line-height: 1.58;
-  color: var(--text-muted);
-  max-width: 62ch;
-  display: -webkit-box;
+  max-width: 64ch;
   -webkit-line-clamp: 2;
   line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
-.rowImage { width: 132px; }
+.rowImage { width: 208px; }
 
-/* The whole row is the target; the link fills it without nesting interactive
-   elements, so the bookmark button stays independently clickable. */
-.stretch::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-}
+.row:hover .headline,
+.gridCard:hover .headline,
+.heroSideItem:hover .headline,
+.heroLead:hover .headline { opacity: 0.58; }
 
-.row:hover .rowTitle { opacity: 0.62; }
-.row:hover .rowImage img { transform: scale(1.03); }
-
-.rowMeta {
-  display: flex;
-  align-items: center;
-  gap: var(--s3);
-  flex-wrap: wrap;
-  position: relative;
-  z-index: 1;
-}
-
-.rowFoot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--s4);
-}
+.row:hover .rowImage img,
+.gridCard:hover .gridImage img,
+.heroLead:hover .heroImage img { transform: scale(1.025); }
 
 @media (max-width: 640px) {
   .row {
-    grid-template-columns: 1fr 88px;
+    grid-template-columns: minmax(0, 1fr) 96px;
     gap: var(--s4);
     padding: var(--s4) 0;
   }
-  .rowImage { width: 88px; }
-  .rowTitle { font-size: 1.125rem; }
-  .rowSummary { -webkit-line-clamp: 3; line-clamp: 3; }
+  .rowImage { width: 96px; }
+  .row .headline { font-size: 1.0625rem; }
+  .row .summary { -webkit-line-clamp: 2; line-clamp: 2; font-size: 0.875rem; }
 }
 
-/* ─── Compact row: sidebars, related lists ──────────────────────────────── */
+/* ═══ Compact: rails and related lists ═════════════════════════════════════ */
+
 .compact {
   display: flex;
   flex-direction: column;
@@ -132,27 +223,19 @@
 .compactTitle {
   font-size: 0.9375rem;
   font-weight: 450;
-  line-height: 1.4;
+  line-height: 1.42;
   letter-spacing: -0.008em;
   transition: opacity var(--dur-fast) var(--ease);
 }
-.compact:hover .compactTitle { opacity: 0.62; }
+.compact:hover .compactTitle { opacity: 0.6; }
 
-/* ─── Feed list ─────────────────────────────────────────────────────────── */
-.list {
-  list-style: none;
-  border-top: 1px solid var(--border);
-}
+/* ═══ Entrance ═════════════════════════════════════════════════════════════ */
 
-.listBare { list-style: none; }
-
-/* Staggered entrance, capped so a long feed does not crawl in. */
-.list > li { animation: rise var(--dur) var(--ease) both; }
-.list > li:nth-child(1)  { animation-delay: 0ms; }
-.list > li:nth-child(2)  { animation-delay: 30ms; }
-.list > li:nth-child(3)  { animation-delay: 60ms; }
-.list > li:nth-child(4)  { animation-delay: 90ms; }
-.list > li:nth-child(5)  { animation-delay: 120ms; }
-.list > li:nth-child(6)  { animation-delay: 150ms; }
-.list > li:nth-child(7)  { animation-delay: 180ms; }
-.list > li:nth-child(n+8) { animation-delay: 200ms; }
+.list > li,
+.grid > li { animation: rise var(--dur) var(--ease) both; }
+.list > li:nth-child(1), .grid > li:nth-child(1) { animation-delay: 0ms; }
+.list > li:nth-child(2), .grid > li:nth-child(2) { animation-delay: 40ms; }
+.list > li:nth-child(3), .grid > li:nth-child(3) { animation-delay: 80ms; }
+.list > li:nth-child(4), .grid > li:nth-child(4) { animation-delay: 120ms; }
+.list > li:nth-child(5), .grid > li:nth-child(5) { animation-delay: 160ms; }
+.list > li:nth-child(n+6), .grid > li:nth-child(n+6) { animation-delay: 190ms; }

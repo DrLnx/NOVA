@@ -16,12 +16,12 @@
 
 .head {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 380px;
-  gap: var(--s7);
-  align-items: start;
-  padding-bottom: var(--s6);
-  border-bottom: 1px solid var(--text);
-  margin-bottom: var(--s6);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr);
+  gap: var(--s8);
+  align-items: center;
+  padding-bottom: var(--s7);
+  border-bottom: 2px solid var(--text);
+  margin-bottom: var(--s7);
 }
 
 @media (max-width: 900px) {
@@ -39,7 +39,7 @@
 
 .title {
   font-family: var(--font-serif);
-  font-size: clamp(2rem, 4.6vw, 3.1rem);
+  font-size: clamp(2.125rem, 3.5vw, 3.75rem);
   font-weight: 500;
   line-height: 1.06;
   letter-spacing: -0.03em;
@@ -47,16 +47,16 @@
 }
 
 .summary {
-  font-size: 1.0625rem;
-  line-height: 1.62;
+  font-size: 1.1875rem;
+  line-height: 1.6;
   color: var(--text-secondary);
-  max-width: 58ch;
+  max-width: 62ch;
 }
 
 .layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
-  gap: var(--s7);
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: var(--s8);
   align-items: start;
 }
 
@@ -67,9 +67,9 @@
 .rail {
   display: flex;
   flex-direction: column;
-  gap: var(--s6);
+  gap: var(--s5);
   position: sticky;
-  top: calc(var(--header-h) + 40px + var(--s5));
+  top: calc(var(--header-h) + var(--strip-h) + var(--s4));
 }
 
 @media (max-width: 1000px) {
@@ -111,9 +111,9 @@
 
 .entry {
   display: grid;
-  grid-template-columns: 160px minmax(0, 1fr);
-  gap: var(--s5);
-  padding: var(--s5) 0;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: var(--s6);
+  padding: var(--s6) 0;
   border-bottom: 1px solid var(--border);
   position: relative;
 }
@@ -149,7 +149,7 @@
 
 .entryTitle {
   font-family: var(--font-serif);
-  font-size: 1.25rem;
+  font-size: 1.4375rem;
   font-weight: 500;
   line-height: 1.26;
   letter-spacing: -0.014em;
@@ -222,3 +222,24 @@
 }
 
 .section { margin-bottom: var(--s7); }
+
+/* The newsroom's own headline, kept visible beneath a translated one. Losing it
+   would defeat the point of the comparison. */
+.entryOriginal {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--text-faint);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-left: var(--s3);
+  border-left: 1px solid var(--border);
+}
+
+.entryOriginalLabel {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}

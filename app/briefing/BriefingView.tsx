@@ -3,9 +3,12 @@
 import Link from 'next/link';
 import type { Story } from '@/lib/types';
 import { getSource } from '@/lib/sources';
+import { textFor } from '@/lib/i18n';
 import { useApp, useDict } from '@/components/Providers';
-import { CategoryTag, Separator, Timestamp, WeightBadge } from '@/components/primitives';
-import { EmptyState } from '@/components/Masthead';
+import {
+  CategoryTag, Separator, Timestamp, TranslationMark, WeightBadge,
+} from '@/components/primitives';
+import { EmptyState } from '@/components/DateBar';
 import s from './briefing.module.css';
 
 export function BriefingView({ stories }: { stories: Story[] }) {
@@ -32,6 +35,7 @@ export function BriefingView({ stories }: { stories: Story[] }) {
       ) : (
         <ol className={s.list}>
           {stories.map((story, i) => {
+            const text = textFor(story, lang);
             const href =
               story.sourceIds.length > 1
                 ? `/story/${story.id}`
@@ -42,20 +46,21 @@ export function BriefingView({ stories }: { stories: Story[] }) {
                 <span className={s.index}>{String(i + 1).padStart(2, '0')}</span>
                 <div className={s.body}>
                   <div className={s.meta}>
-                    <WeightBadge story={story} />
+                    <WeightBadge story={story} showLabel />
                     <Separator />
                     <Timestamp iso={story.lastSeen} />
                     <Separator />
                     <CategoryTag category={story.category} />
+                    <TranslationMark text={text} />
                   </div>
 
                   <h2>
                     <Link href={href} className={s.itemTitle}>
-                      {story.title}
+                      {text.title}
                     </Link>
                   </h2>
 
-                  {story.summary ? <p className={s.itemSummary}>{story.summary}</p> : null}
+                  {text.summary ? <p className={s.itemSummary}>{text.summary}</p> : null}
 
                   {story.sourceIds.length > 1 ? (
                     <p className={s.spread}>

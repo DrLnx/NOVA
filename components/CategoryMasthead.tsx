@@ -2,7 +2,7 @@
 
 import type { Category } from '@/lib/types';
 import { useApp, useDict } from './Providers';
-import s from '@/app/page.module.css';
+import s from './CategoryHeading.module.css';
 
 const BLURB: Record<Category, { de: string; en: string }> = {
   politics: {
@@ -31,20 +31,14 @@ const BLURB: Record<Category, { de: string; en: string }> = {
   },
 };
 
-export function CategoryMasthead({ category, count }: { category: Category; count: number }) {
+export function CategoryHeading({ category, count }: { category: Category; count: number }) {
   const dict = useDict();
   const { lang } = useApp();
 
   return (
-    <div className={s.masthead}>
-      <div>
-        <h1 className={s.mastheadTitle}>{dict.categories[category]}</h1>
-        <p className={s.mastheadSub}>{BLURB[category][lang]}</p>
-      </div>
-      <div className={s.status}>
-        <span className={s.statusLine}>{count} Stories</span>
-        <span className={s.statusLine}>{dict.sortedByWeight}</span>
-      </div>
-    </div>
+    <header className={s.head}>
+      <h1 className={s.title}>{dict.categories[category]}</h1>
+      <p className={s.blurb}>{BLURB[category][lang]}</p>
+    </header>
   );
 }

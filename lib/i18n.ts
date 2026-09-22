@@ -1,4 +1,4 @@
-import type { Category, Lang } from './types';
+import type { Category, Lang, Localized, LocalizedText } from './types';
 
 export const LANGS = ['de', 'en'] as const;
 export const DEFAULT_LANG: Lang = 'de';
@@ -56,6 +56,7 @@ export const DICT = {
       recency: 'Aktualität',
     } as Record<string, string>,
     leadStories: 'Leitmeldungen',
+    byWeight: 'Nach Gewichtung',
     furtherStories: 'Weitere Meldungen',
     sortedByWeight: 'Nach Gewichtung sortiert',
 
@@ -125,7 +126,15 @@ export const DICT = {
     hoursAgo: (n: number) => `vor ${n} Std.`,
     daysAgo: (n: number) => (n === 1 ? 'gestern' : `vor ${n} Tagen`),
 
-    updated: 'Aktualisiert',
+    updated: 'Live',
+    articlesWord: 'Artikel',
+    sourcesWord: 'Quellen',
+    translated: 'Übersetzt',
+    translatedNote: 'Maschinell übersetzt. Die Originalüberschrift steht auf der Meldungsseite.',
+    originalLanguage: 'Nur auf Englisch verfügbar',
+    inGerman: 'Deutsch',
+    inEnglish: 'Englisch',
+    originalHeadline: 'Originalüberschrift',
     sourcesUnavailable: (n: number) =>
       `${n} ${n === 1 ? 'Quelle ist' : 'Quellen sind'} derzeit nicht erreichbar.`,
     noArticles: 'Keine Artikel in diesem Ressort.',
@@ -190,6 +199,7 @@ export const DICT = {
       recency: 'Recency',
     } as Record<string, string>,
     leadStories: 'Lead stories',
+    byWeight: 'By weight',
     furtherStories: 'More stories',
     sortedByWeight: 'Sorted by weight',
 
@@ -259,7 +269,15 @@ export const DICT = {
     hoursAgo: (n: number) => `${n}h ago`,
     daysAgo: (n: number) => (n === 1 ? 'yesterday' : `${n}d ago`),
 
-    updated: 'Updated',
+    updated: 'Live',
+    articlesWord: 'articles',
+    sourcesWord: 'sources',
+    translated: 'Translated',
+    translatedNote: 'Machine-translated. The original headline is on the story page.',
+    originalLanguage: 'Available in German only',
+    inGerman: 'German',
+    inEnglish: 'English',
+    originalHeadline: 'Original headline',
     sourcesUnavailable: (n: number) =>
       `${n} ${n === 1 ? 'source is' : 'sources are'} unreachable right now.`,
     noArticles: 'No articles in this category.',
@@ -298,4 +316,24 @@ export function absoluteTime(iso: string, lang: Lang): string {
   return new Intl.DateTimeFormat(lang === 'de' ? 'de-DE' : 'en-GB', {
     day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
   }).format(new Date(iso));
+}
+
+/**
+ * Reads a story or article in the requested language. Client-safe: it only
+ * looks at data already resolved on the server, and falls back to the original
+ * text for anything that was never localized.
+ */
+export function textFor(
+  item: { title: string; summary: string; sourceId?: string; lang?: Lang; l10n?: Localized },
+  lang: Lang,
+): LocalizedText {
+  return (
+    item.l10n?.[lang] ?? {
+      title: item.title,
+      summary: item.summary,
+      sourceId: item.sourceId ?? '',
+      lang: item.lang ?? 'en',
+      translated: false,
+    }
+  );
 }

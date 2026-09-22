@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { getStories } from '@/lib/corpus';
+import { attachStoryL10n } from '@/lib/localize';
 import { BriefingView } from './BriefingView';
 
 export const revalidate = 300;
@@ -11,6 +12,6 @@ export const metadata: Metadata = {
 
 export default async function BriefingPage() {
   // Stories arrive sorted by weight, so the top of the list is the briefing.
-  const stories = await getStories({}, 6);
+  const stories = await attachStoryL10n(await getStories({}, 6));
   return <BriefingView stories={stories} />;
 }

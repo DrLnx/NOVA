@@ -45,14 +45,18 @@
   --radius: 6px;
   --radius-sm: 4px;
 
-  --page-max: 1200px;
+  /* A wide editorial canvas. The gutter scales with the viewport so the page
+     breathes on a large display without the measure running away on a laptop. */
+  --page-max: 1480px;
   --prose-max: 68ch;
+  --gutter: clamp(1rem, 3.2vw, 3.5rem);
 
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --dur-fast: 150ms;
   --dur: 250ms;
 
-  --header-h: 56px;
+  --header-h: 60px;
+  --strip-h: 42px;
 
   color-scheme: light;
 }
@@ -85,7 +89,7 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
-  font-size: 15px;
+  font-size: 15.5px;
   line-height: 1.6;
   font-feature-settings: 'kern', 'liga', 'calt';
   -webkit-font-smoothing: antialiased;
@@ -133,11 +137,7 @@ button, input, select {
   width: 100%;
   max-width: var(--page-max);
   margin-inline: auto;
-  padding-inline: var(--s5);
-}
-
-@media (max-width: 640px) {
-  .container { padding-inline: var(--s4); }
+  padding-inline: var(--gutter);
 }
 
 /* The mono label: source names, timestamps, categories, counts. */
@@ -200,4 +200,45 @@ button, input, select {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ─── Editorial column rules ────────────────────────────────────────────────
+   Hairlines between grid columns. This is the single strongest cue that a page
+   is a publication rather than a feed, and it costs one border per cell. The
+   leftmost cell of each row drops its rule, which is why the nth-child rules
+   are restated per breakpoint.                                              */
+
+.ruled > li {
+  border-left: 1px solid var(--border);
+  padding-left: var(--s5);
+}
+
+@media (min-width: 1200px) {
+  .ruled > li:nth-child(4n + 1) { border-left: none; padding-left: 0; }
+}
+
+@media (min-width: 900px) and (max-width: 1199.98px) {
+  .ruled > li:nth-child(3n + 1) { border-left: none; padding-left: 0; }
+}
+
+@media (min-width: 561px) and (max-width: 899.98px) {
+  .ruled > li:nth-child(2n + 1) { border-left: none; padding-left: 0; }
+}
+
+@media (max-width: 560px) {
+  .ruled > li { border-left: none; padding-left: 0; }
+}
+
+/* ─── Rules and section rhythm ──────────────────────────────────────────── */
+
+.ruleThick {
+  border: none;
+  border-top: 2px solid var(--text);
+  margin: 0;
+}
+
+.ruleThin {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0;
 }

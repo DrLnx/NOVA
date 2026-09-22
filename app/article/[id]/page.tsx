@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getArticle, getCorpus, getStoryForArticle } from '@/lib/corpus';
+import { attachArticleL10n } from '@/lib/localize';
 import { ArticleView } from './ArticleView';
 
 export const revalidate = 300;
@@ -28,6 +29,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
   const moreFromSource = articles
     .filter((a) => a.sourceId === article.sourceId && a.id !== id)
     .slice(0, 5);
+
+  await attachArticleL10n([article, ...others, ...moreFromSource]);
 
   return (
     <ArticleView

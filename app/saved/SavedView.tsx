@@ -1,21 +1,39 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import type { Article } from '@/lib/types';
 import { useApp, useDict } from '@/components/Providers';
 import { ArticleFeed } from '@/components/ArticleCard';
 import s from '@/app/search/search.module.css';
 
-export function SavedView({ articles }: { articles: Article[] }) {
+export function SavedView() {
   const dict = useDict();
   const { saved, hydrated } = useApp();
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  // Preserve the order the reader saved them in, newest first.
+  useEffect(() => {
+    if (!hydrated) return;
+    if (saved.length === 0) {
+      setArticles([]);
+      return;
+    }
+    const controller = new AbortController();
+    setLoading(true);
+    fetch(`/api/articles?ids=${saved.join(',')}`, { signal: controller.signal })
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((data: { results: Article[] }) => setArticles(data.results ?? []))
+      .catch(() => {
+        /* offline or aborted */
+      })
+      .finally(() => setLoading(false));
+    return () => controller.abort();
+  }, [saved, hydrated]);
+
+  // Keep the reader's own order, newest save first.
   const byId = new Map(articles.map((a) => [a.id, a]));
-  const items = saved
-    .map((id) => byId.get(id))
-    .filter((a): a is Article => a !== undefined);
-
-  const missing = saved.length - items.length;
+  const items = saved.map((id) => byId.get(id)).filter((a): a is Article => a !== undefined);
+  const missing = hydrated && !loading ? saved.length - items.length : 0;
 
   return (
     <div className={`${s.page} container`}>
@@ -26,7 +44,9 @@ export function SavedView({ articles }: { articles: Article[] }) {
         </p>
       </header>
 
-      {!hydrated ? null : items.length === 0 ? (
+      {!hydrated || loading ? (
+        <p className={s.loading}>···</p>
+      ) : items.length === 0 ? (
         <div className={s.empty}>
           <p className={s.emptyTitle}>{dict.savedEmpty}</p>
           <p className={s.emptyBody}>{dict.savedEmptyHint}</p>
